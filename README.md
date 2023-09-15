@@ -1,7 +1,5 @@
 # Coder une application météo ☀️
 
-> ctrl+shift+v sur VS Code pour analyser ce fichier markdown
-
 <br>
 
 En voilà un projet sympathique, la programmation d'une App météo !<br>
