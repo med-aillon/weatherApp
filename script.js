@@ -5,8 +5,13 @@ async function getWeatherData() {
   try {
     const response = await fetch(
       'http://api.airvisual.com/v2/nearest_city?key=API_KEY'
-    );
-
+    ).catch(() => {
+      throw new Error(`Pas d'internet`);
+    });
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}, ${response.statusText}`);
+    }
     const responseData = await response.json();
     const sortedData = {
       city: responseData.data.city,
@@ -15,7 +20,10 @@ async function getWeatherData() {
       iconId: responseData.data.current.weather.ic,
     };
     populateUI(sortedData);
-  } catch (error) {}
+  } catch (error) {
+    loader.classList.remove('active');
+    errorInformation.textContent = error.message;
+  }
 }
 getWeatherData();
 
