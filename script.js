@@ -4,19 +4,32 @@ const errorInformation = document.querySelector('.error-informations');
 async function getWeatherData() {
   try {
     const response = await fetch(
-      'http://api.airvisual.com/v2/nearest_city?key=2d244729-05d5-4cc3-bcbc-c317628bd9c5'
-    );
+      'http://api.airvisual.com/v2/nearest_city?key=API_KEY'
+    ).catch(() => {
+      throw new Error(`Pas d'internet`);
+    });
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}, ${response.statusText}`);
+    }
     const responseData = await response.json();
     const sortedData = {
       city: responseData.data.city,
       country: responseData.data.country,
       temperature: responseData.data.current.weather.tp,
-      icon: responseData.data.current.weather.ic,
+      iconId: responseData.data.current.weather.ic,
     };
     populateUI(sortedData);
-  } catch (error) {}
+  } catch (error) {
+    loader.classList.remove('active');
+    errorInformation.textContent = error.message;
+  }
 }
 getWeatherData();
+
+// const getData = document
+//   .querySelector('.get-data')
+//   .addEventListener('click', getWeatherData);
 
 const cityName = document.querySelector('.city-name');
 const countryName = document.querySelector('.country-name');
@@ -27,7 +40,7 @@ function populateUI(data) {
   cityName.textContent = data.city;
   countryName.textContent = data.country;
   temperature.textContent = `${data.temperature}°`;
-  infoIcon.src = `/ressources/icons/${data.icon}.svg`;
+  infoIcon.src = `/ressources/icons/${data.iconId}.svg`;
   infoIcon.style.width = '150px';
   loader.classList.remove('active');
 }
